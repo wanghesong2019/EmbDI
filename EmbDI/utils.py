@@ -257,6 +257,7 @@ def read_similarities(sim_file):
 
 
 def return_default_values(config):
+    """如项目readme所言：Default values are hardcoded in EmbDI.utils.py"""
     default_values = {
         'ntop': 10,
         'ncand': 1,
@@ -294,6 +295,7 @@ def return_default_values(config):
 
 
 def _convert_to_bool(config, key):
+    """配置文件config字典关键字key对应的value转化为True/False"""
     if config[key] in [True, False]:
         return config
     if config[key].lower() not in ['true', 'false']:
@@ -307,17 +309,24 @@ def _convert_to_bool(config, key):
 
 
 def read_edgelist(edgelist_path):
+    #节点之间的权重转化为float类型
     with open(edgelist_path, 'r') as fp:
         edgelist = []
         for idx, line in enumerate(fp):
-            if idx == 0:
+            if idx == 0: #edgelist文件第1行是节点类型
                 node_types = line.strip().split(',')
             else:
-                l = line.strip().split(',')
+                """
+                The format of the edgelist is one of the following:
+                1) n1,n2,w1,w2 >> node1, node2, weight1to2, weight2to1
+                2) n1,n2 >> node1, node2, 1, 1
+                3) n1,n2,w1 >> node1, node2, weight1to2 [no link back, directed graph]                
+                """
+                l = line.strip().split(',') 
                 l1 = l[:2]
                 if len(l) > 2:
                     for _ in l[2:]:
-                        w1 = float(_)
+                        w1 = float(_) #权重转化为float类型
                         l1.append(w1)
                 edgelist.append(l1)
     return node_types, edgelist
@@ -471,8 +480,9 @@ def check_config_validity(config):
 
 
 def find_frequencies(configuration):
+    """该函数统计出的values, counts怎么使用的？"""
     with open(configuration['dataset_info'], 'r') as fp:
         for i, line in enumerate(fp):
             path, length = line.strip().split(',')
             df = pd.read_csv(path)
-            values, counts = np.unique(df.values.ravel(), return_counts=True)
+            values, counts = np.unique(df.values.ravel(), return_counts=True) #df的values用ravel()函数拉成1维，并用np.unique()去重
