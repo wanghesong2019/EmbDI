@@ -29,11 +29,11 @@ def remove_prefixes(edgelist_file, model_file):
     :param model_file: Embeddings file to clean.
     :return: Path to the new, cleaned embeddings file.
     '''
-    newf, _ = os.path.splitext(model_file)
+    newf, _ = os.path.splitext(model_file) #分离文件名与扩展名
     newf += '_cleaned.emb'
 
     with open(edgelist_file) as fp:
-        node_types = fp.readline().strip().split(',')
+        node_types = fp.readline().strip().split(',') #The first line of the edgelist contain all the prefixes that define node types (such as RID, CID, tokens)
         prefixes = [_.split('__')[1] for _ in node_types]
 
     fin = open(model_file, 'r')
@@ -100,9 +100,13 @@ def apply_PCA(embeddings_file, reduced_file, n_components):
 
 
 def clean_dump():
+    """清除'pipeline/dump'和'pipeline/test'目录下的文件
+    作用是啥?
+    """
     filelist = [f for f in os.listdir('pipeline/dump')]
     for f in filelist:
-        os.remove(os.path.join('pipeline/dump', f))
+        os.remove(os.path.join('pipeline/dump', f)) #os.path.join()连接路径
+        #os.remove() 方法用于删除指定路径的文件，没有返回值
 
     filelist = [f for f in os.listdir('pipeline/test')]
     for f in filelist:
@@ -121,12 +125,13 @@ def find_intersection_flatten(df, info_file):
     s1 = set([str(_) for _ in df1.values.ravel().tolist()])
     s2 = set([str(_) for _ in df2.values.ravel().tolist()])
 
-    intersection = s1.intersection(s2)
+    intersection = s1.intersection(s2) intersection表示set之间的交集
 
     return intersection
 
 
 def compute_n_tokens(df_file):
+    """统计单元格个数"""
     df = pd.read_csv(df_file, dtype=str)
     n_rows = len(df)
     #    n_values = len(set(df.values.ravel().tolist()))
