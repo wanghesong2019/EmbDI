@@ -153,11 +153,11 @@ def int2base(x, base):
     if x < 0:
         sign = -1
     elif x == 0:
-        return digs[0]
+        return digs[0] #digs = 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
     else:
         sign = 1
 
-    x *= sign
+    x *= sign #x若为负数，则先转化为正数
     digits = []
 
     while x:
