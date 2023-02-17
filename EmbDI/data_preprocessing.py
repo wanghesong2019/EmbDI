@@ -17,6 +17,10 @@ BAD_SYMBOLS_NUMBERS = re.compile("[^\d*(\.\d+)?]")
 BAD_SYMBOLS_RE = re.compile("[^0-9a-z A-Z]")
 STOPWORDS = set(stopwords.words("english"))
 
+##语法积累
+#\s表示匹配任何空白字符，包括空格、制表符、换页符等等, 等价于[ \f\n\r\t\v]
+#而"\s+"则表示匹配任意多个上面的字符，上句将有空格的列名改成以下划线_连接
+# *表示重复0次或多次，+表示重复1次或多次
 
 def check_info(df, columns=[]):
     null = df.isnull().sum()
