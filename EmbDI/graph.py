@@ -183,6 +183,7 @@ class Graph:
         for pre in self.node_classes:
             if node.startswith(pre + '__'):
                 return pre
+        #node和self.node_classes的任何类均匹配不上，则报异常
         raise ValueError('Node {} does not have a recognized prefix. '
                          'Currently recognized node_classes:\n'.format(node, ' '.join(self.node_classes)))
 

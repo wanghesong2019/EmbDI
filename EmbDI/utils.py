@@ -173,7 +173,7 @@ def int2base(x, base):
 
 
 def dict_compression_edgelist(edgelist, prefixes):
-    uniques = sorted(list(set(edgelist.values.ravel().tolist())))
+    uniques = sorted(list(set(edgelist.values.ravel().tolist()))) #去重
 
     # Expanding strings that contain '_'
     prefixes = [_[4:] for _ in prefixes]

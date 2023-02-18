@@ -93,8 +93,8 @@ def training_driver(configuration):
     edgelist_df = pd.read_csv(configuration['input_file'], 
                                 dtype=str, 
                                 index_col=False)
-    edgelist_df = edgelist_df[edgelist_df.columns[:2]]
-    edgelist_df.dropna(inplace=True)
+    edgelist_df = edgelist_df[edgelist_df.columns[:2]] #疑点：只选前2列的原因?
+    edgelist_df.dropna(inplace=True) #去掉含空单元格的行
 
     run_tag = configuration['output_file']
     configuration['run-tag'] = run_tag
@@ -102,7 +102,7 @@ def training_driver(configuration):
     if configuration['task'] in ['train', 'train-test', 'train-match']:
         # Check if walks have been provided. If not, graph and walks will be generated.
         if configuration['walks_file'] is None:
-            prefixes, edgelist = read_edgelist(configuration['input_file'])
+            prefixes, edgelist = read_edgelist(configuration['input_file']) #edge形如(node1, node2, weight1to2, weight2to1)等类型
 
             if configuration['compression']:
                 # Execute compression if required.
