@@ -37,9 +37,10 @@ def parse_args():
     Returns:
         Namespace: Argument parser
     """ 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--unblocking', action='store_true', default=False)
-    group = parser.add_mutually_exclusive_group()
+    parser = argparse.ArgumentParser() #创建解析器
+    parser.add_argument('--unblocking', action='store_true', default=False) #添加unblocking参数
+    #action=‘store_true’ ，只要运行时该变量有传参，该变量就为True。
+    group = parser.add_mutually_exclusive_group() #互斥参数，不能同时指定，否则报错
     group.add_argument('-f', '--config_file', action='store', default=None)
     group.add_argument('-d', '--config_dir', action='store', default=None)
     parser.add_argument('--no_info', action='store_true', default=False)
@@ -188,8 +189,8 @@ def read_configuration(config_file):
 
     with open(config_file, 'r') as fp_config_file:
         for idx, line in enumerate(fp_config_file):
-            line = line.strip()
-            if len(line) == 0 or line[0] == '#': 
+            line = line.strip() #strip() 方法用于移除字符串头尾指定的字符(默认为空格)
+            if len(line) == 0 or line[0] == '#': #空行或注释行，跳过
                 continue
             split_line = line.split(':')
             if len(split_line) < 2:
@@ -227,7 +228,7 @@ def full_run(config_dir, config_file):
 
 def main(file_path=None, dir_path=None, args=None):
     # Building dir tree required to run the code.
-    os.makedirs('pipeline/dump', exist_ok=True)
+    os.makedirs('pipeline/dump', exist_ok=True) #允许path参数中的目录存在
     os.makedirs('pipeline/walks', exist_ok=True)
     os.makedirs('pipeline/embeddings', exist_ok=True)
     os.makedirs('pipeline/generated-matches', exist_ok=True)
@@ -235,7 +236,7 @@ def main(file_path=None, dir_path=None, args=None):
 
     # Finding the configuration file paths.
     if args:
-        if args.config_dir:
+        if args.config_dir: #互斥参数的体现
             config_dir = args.config_dir
             config_file = None
         else:
@@ -250,13 +251,13 @@ def main(file_path=None, dir_path=None, args=None):
     # Extracting valid files
     if config_dir:
         valid_files = [_ for _ in os.listdir(config_dir) if not _.startswith('default')
-                       and not os.path.isdir(config_dir + '/' + _)]
+                       and not os.path.isdir(config_dir + '/' + _)] #os.path.isdir()用于判断对象是否为一个目录
         n_files = len(valid_files)
         print('Found {} files'.format(n_files))
     elif config_file:
         if args:
-            valid_files = [os.path.basename(args.config_file)]
-            config_dir = os.path.dirname(args.config_file)
+            valid_files = [os.path.basename(args.config_file)] #os.path.basename()用于获取指定路径中的基本名称
+            config_dir = os.path.dirname(args.config_file) #os.path.dirname()去掉文件名，返回目录名
         else:
             valid_files = [os.path.basename(config_file)]
             config_dir = os.path.dirname(config_file)
@@ -287,7 +288,7 @@ def main(file_path=None, dir_path=None, args=None):
             except ValueError as e:
                 print(f'Run {file} has failed. ')
                 print(e)
-            finally:
+            finally: #不管有没有报错，finally下的语句都一定会被执行
                 print(f'Run {file} is over. ')
 
     else:
