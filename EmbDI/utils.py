@@ -125,7 +125,7 @@ def find_intersection_flatten(df, info_file):
     s1 = set([str(_) for _ in df1.values.ravel().tolist()])
     s2 = set([str(_) for _ in df2.values.ravel().tolist()])
 
-    intersection = s1.intersection(s2) intersection表示set之间的交集
+    intersection = s1.intersection(s2) #intersection表示set之间的交集
 
     return intersection
 
