@@ -332,8 +332,9 @@ def read_edgelist(edgelist_path):
     return node_types, edgelist
 
 
-def check_config_validity(config):
+def check_config_validity(proj_path,  config):
     #### Set default values
+    #proj_path指项目数据的当前根目录
     config = return_default_values(config)
 
     if config['task'] not in POSSIBLE_TASKS:
@@ -350,7 +351,7 @@ def check_config_validity(config):
                               'Tests require a valid Ground Truth file.'.format(config['match_file']))
             if config['experiment_type'] == 'SM':
                 if 'dataset_file' not in config or (
-                        config['dataset_file'] != '' and not os.path.exists(config['dataset_file'])):
+                        config['dataset_file'] != '' and not os.path.exists(proj_path+config['dataset_file'])):
                     raise IOError('Dataset file {} not found. '
                                   'SM tests require a valid dataset file.'.format(config['dataset_file']))
 
@@ -455,7 +456,7 @@ def check_config_validity(config):
         config['mlflow'] = False
 
     #### Path checks
-    if 'train' in config['task'] and not os.path.exists(config['input_file']):
+    if 'train' in config['task'] and not os.path.exists(proj_path+config['input_file']):
         raise IOError('Input file {} not found.'.format(config['input_file']))
     if not os.path.exists(config['dataset_info']):
         raise IOError('Info file {} not found.'.format(config['dataset_info']))

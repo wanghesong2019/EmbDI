@@ -30,6 +30,8 @@ with warnings.catch_warnings():
     from EmbDI.utils import (OUTPUT_FORMAT, TIME_FORMAT, check_config_validity,
                              dict_compression_edgelist, read_edgelist)
 
+#全局变量
+proj_path = "E:\装机备份文件\学海无涯\博士后面\算法实操\EmbDI_git\EmbDI_datasets\\"
 
 def parse_args():
     """Simple argument parser invoked on startup. 
@@ -90,7 +92,7 @@ def training_driver(configuration):
     generated and the result is passed to the embeddings training algorithm. 
 
     '''
-    edgelist_df = pd.read_csv(configuration['input_file'], 
+    edgelist_df = pd.read_csv(proj_path+configuration['input_file'],
                                 dtype=str, 
                                 index_col=False)
     edgelist_df = edgelist_df[edgelist_df.columns[:2]] #疑点：只选前2列的原因?
@@ -102,7 +104,7 @@ def training_driver(configuration):
     if configuration['task'] in ['train', 'train-test', 'train-match']:
         # Check if walks have been provided. If not, graph and walks will be generated.
         if configuration['walks_file'] is None:
-            prefixes, edgelist = read_edgelist(configuration['input_file']) #edge形如(node1, node2, weight1to2, weight2to1)等类型
+            prefixes, edgelist = read_edgelist(proj_path+configuration['input_file']) #edge形如(node1, node2, weight1to2, weight2to1)等类型
 
             if configuration['compression']:
                 # Execute compression if required.
@@ -205,7 +207,7 @@ def full_run(config_dir, config_file):
     # Parsing the configuration file.
     configuration = read_configuration(config_dir + '/' + config_file)
     # Checking the correctness of the configuration, setting default values for missing values.
-    configuration = check_config_validity(configuration)
+    configuration = check_config_validity(proj_path, configuration)
 
     # Running the task specified in the configuration file.
     params.par_dict = configuration
