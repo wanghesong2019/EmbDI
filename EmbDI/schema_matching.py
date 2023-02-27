@@ -16,6 +16,9 @@ def parse_args():
 
 
 def read_matches(match_file):
+    """
+    以字典形式返回match pairs
+    """
     with open(match_file, 'r', encoding='utf-8') as fp:
         md = {}
         for idx, line in enumerate(fp):
@@ -65,18 +68,19 @@ def _infer_prefix(df):
 
 
 def _match(candidates, maxrank=3):
-    to_be_matched = list(candidates.keys())
+    """论文中的Algorithm 5 Schema Matching"""
+    to_be_matched = list(candidates.keys()) #待匹配的列
     misses = {k: 0 for k in candidates}
 
     mm = []
 
     while len(to_be_matched) > 0:
-        tbm = to_be_matched.copy()
+        tbm = to_be_matched.copy() #浅拷贝，等于赋值，to_be_matched及逆行下面操作，tbm不变
         for item in tbm:
             if item not in to_be_matched:
                 continue
             else:
-                if misses[item] > maxrank:
+                if misses[item] > maxrank: #对应
                     to_be_matched.remove(item)
                     continue
                 else:
@@ -97,13 +101,16 @@ def _match(candidates, maxrank=3):
                                         candidates[k].remove(closest_to_item)
                                 break
                             else:
-                                misses[item] += 1
+                                misses[item] += 1 #匹配不上，则miss值加1
                     else:
                         to_be_matched.remove(item)
     return mm
 
 
 def _extract_candidates(wv, dataset):
+    """
+    根据distance排序，并通过ptrfix过滤出字典形式的candidates，形如{v1:[v2,...,v3]}
+    """
     candidates = []
     for _1 in range(len(dataset.columns)):
         for _2 in range(0, len(dataset.columns)):
@@ -125,7 +132,7 @@ def _extract_candidates(wv, dataset):
         if not k[1].startswith(prefix):
             cleaned.append(k)
 
-    cleaned_sorted = sorted(cleaned, key=itemgetter(0, 2), reverse=False)
+    cleaned_sorted = sorted(cleaned, key=itemgetter(0, 2), reverse=False) #distance越小、越相似的越靠前
 
     candidates = {}
     for value in cleaned_sorted:
@@ -153,6 +160,7 @@ def match_columns(dataset, embeddings_file):
     if emb_file is None:
         return []
     wv = models.KeyedVectors.load_word2vec_format(emb_file, unicode_errors='ignore')
+    #Load KeyedVectors from a file produced by the original C word2vec-tool format.
     # print('Model built from file {}'.format(embeddings_file))
     candidates = _extract_candidates(wv, dataset)
 

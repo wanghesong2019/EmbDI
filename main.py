@@ -205,6 +205,7 @@ def read_configuration(config_file):
 
 def full_run(config_dir, config_file):
     # Parsing the configuration file.
+    # config_dir指当前项目数据所在的目录
     configuration = read_configuration(config_dir + '/' + config_file)
     # Checking the correctness of the configuration, setting default values for missing values.
     configuration = check_config_validity(proj_path, configuration)

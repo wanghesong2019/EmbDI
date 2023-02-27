@@ -133,6 +133,7 @@ pipeline/debug
 pipeline/edgelists
 pipeline/embeddings
 pipeline/walks
+EmbDI_datasets/
 
 # VSCode settings
 .vscode/

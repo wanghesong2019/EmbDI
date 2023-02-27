@@ -342,8 +342,7 @@ def check_config_validity(proj_path,  config):
 
     if 'test' in config['task']:
         if 'train' not in config['task']:
-            if config['embeddings_file'] == '' or (config['embeddings_file'] != ''
-                                                   and not os.path.exists(config['embeddings_file'])):
+            if config['embeddings_file'] == '' or (config['embeddings_file'] != '' and not os.path.exists(config['embeddings_file'])):
                 raise IOError('Embeddings file {} not found'.format(config['embeddings_file']))
         if config['experiment_type'] in ['ER', 'SM']:
             if not config['match_file'] or (config['match_file'] != '' and not os.path.exists(config['match_file'])):
