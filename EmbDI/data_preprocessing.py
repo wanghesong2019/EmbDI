@@ -23,6 +23,7 @@ STOPWORDS = set(stopwords.words("english"))
 # *表示重复0次或多次，+表示重复1次或多次
 
 def check_info(df, columns=[]):
+    """对df的数据按columns进行探查"""
     null = df.isnull().sum()
     if len(columns) == 0:
         columns = df.columns
