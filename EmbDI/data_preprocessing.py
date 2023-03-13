@@ -12,8 +12,8 @@ from similarity.levenshtein import get_levenshtein_distance
 nltk.download("stopwords")
 from nltk.corpus import stopwords
 
-REPLACE_BY_SPACE_RE = re.compile("[-._/(){}\[\]\|@,;\\\/]")
-BAD_SYMBOLS_NUMBERS = re.compile("[^\d*(\.\d+)?]")
+REPLACE_BY_SPACE_RE = re.compile("[-._/(){}\[\]\|@,;\\\/]") #正则含义是啥
+BAD_SYMBOLS_NUMBERS = re.compile("[^\d*(\.\d+)?]") #\d 匹配一个数字字符。等价于 [0-9]
 BAD_SYMBOLS_RE = re.compile("[^0-9a-z A-Z]")
 STOPWORDS = set(stopwords.words("english"))
 
@@ -90,28 +90,29 @@ def data_preprocessing(dfs, params):
 
     all_merge_columns = []
 
-    df_words = {}
+    df_words = {} #这个变量的含义
 
     # Iterate through all data frames.
     for i, df in enumerate(dfs):
         # Set all values to lowercase if words are not case sensitive.
         if not parameters["case_sensitive"]:
             df.columns = [_.lower() for _ in df.columns]
-        df.columns = [re.sub(r"\s+", "_", str(x)) for x in df.columns]
+        df.columns = [re.sub(r"\s+", "_", str(x)) for x in df.columns] #空格替换成"_"
         # df[c] = df[c].apply(lambda x: )
         #
-        # normalize missing values
+        # normalize missing values 理论可参考文章的section5.2
         if parameters["missing_value"] != "":
             missing_value = parameters["missing_value"].split(",")
             missing_value = [_.strip() for _ in missing_value]
             missing_value = "|".join(missing_value)
-            pattern = re.compile("^\s*(" + missing_value + ")\s*$", re.IGNORECASE)
+            pattern = re.compile("^\s*(" + missing_value + ")\s*$", re.IGNORECASE) #re.IGNORECASE使匹配对大小写不敏感
             df = df.replace(pattern, np.nan)
 
         # Extract the columns needed to perform different operations on
+        #目前包含了3中列：num_columns,split_columns,expand_columns，但含义分别是什么?
         num_columns = [_ for _ in parameters["round_columns"].split(",") if _ in df.columns]
         split_columns = [_ for _ in parameters["split_columns"].split(",") if _ in df.columns]
-        if parameters["tokenize_shared"]:
+        if parameters["tokenize_shared"]: #什么含义
             expand_columns = df.columns
         else:
             expand_columns = [_ for _ in parameters["expand_columns"].split(",") if _ in df.columns]
@@ -126,9 +127,9 @@ def data_preprocessing(dfs, params):
                     warnings.warn(
                         "Column {} is marked to be rounded, but it contains non-numeric characters.".format(c)
                     )
-                    df[c] = df[c].apply(lambda x: re.sub(BAD_SYMBOLS_NUMBERS, "", str(x)))
+                    df[c] = df[c].apply(lambda x: re.sub(BAD_SYMBOLS_NUMBERS, "", str(x))) #删除非数字字符
                     try:
-                        df[c] = df[c].replace("", np.nan).astype(float)
+                        df[c] = df[c].replace("", np.nan).astype(float) #对列中的""替换成np.nan
                     except ValueError():
                         print("Something went wrong. Wrong type found. Skipping column {}".format(c))
                 else:
